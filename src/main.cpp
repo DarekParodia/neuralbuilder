@@ -20,8 +20,8 @@ int main() {
     weights2 << 0.3f, -0.7f, 0.5f, -0.2f, 0.9f,
     -0.4f, 0.3f, -0.7f, 10.5f, -0.2f, 0.9f, -0.4f;
 
-    neural::layer<neuronN, dataN> lay1(input.data(), &weights1, neural::activations::relu);
-    neural::layer<2, neuronN>     lay2(lay1.outputs, &weights2, neural::activations::relu);
+    neural::layer lay1(neuronN, dataN, input.data(), weights1, neural::activations::relu);
+    neural::layer lay2(2, neuronN, lay1.outputs.data(), weights2, neural::activations::relu);
 
     lay1.process();
     lay2.process();
