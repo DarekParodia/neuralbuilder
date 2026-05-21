@@ -1,0 +1,15 @@
+build
+build/
+build/*
+
+.idea
+.idea/
+.idea/*
+
+.vscode/*
+!.vscode/launch.json
+!.vscode/c_cpp_properties.json
+
+.cache
+.cache/
+.cache/*
