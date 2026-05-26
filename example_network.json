@@ -1,8 +1,7 @@
 {
     "network_info": {
         "inputs": 2,
-        "outputs": 2,
-        "layers": 1
+        "outputs": 2
     },
     "layers": [
         {

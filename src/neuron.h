@@ -2,6 +2,9 @@
 
 #include <algorithm>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 #include <Eigen/Dense>
 
@@ -53,8 +56,60 @@ namespace neural {
 
     struct network {
             std::vector<layer> layers;
+            float             *inputs;
+            int                input_count;
 
-            network(int layers) {
+            float             *outputs;
+            int                output_count;
+
+            network() {
+            }
+
+            void load_json(std::string filename) {
+                std::ifstream  f(filename);
+                nlohmann::json data = nlohmann::json::parse(f);
+
+                // network info
+                input_count         = data["network_info"]["inputs"];
+                output_count        = data["network_info"]["outputs"];
+                inputs              = new float[input_count];
+
+                int layer_count     = data["layers"].size();
+                for(size_t i = 0; i < layer_count; i++) {
+                    auto   c_lay          = data["layers"][i];
+                    int    c_neuron_count = c_lay["biases"].size();
+                    int          c_input_count = 0;
+                    const float *c_inputs      = nullptr;
+
+
+                    if(i == 0) {
+                        // first layer
+                        c_input_count = input_count;
+                        c_inputs      = inputs;
+                    } else {
+                        c_input_count = layers.at(i - 1).neuron_count;
+                        c_inputs      = layers.at(i - 1).outputs.data();
+                    }
+                    if(i == layer_count - 1) {
+                        // last layer
+                    }
+
+                    Eigen::MatrixXf c_weights;
+                    c_weights.resize(c_neuron_count, c_input_count);
+
+                    for(size_t j = 0; j < c_neuron_count; j++) {
+                        auto row_weights = c_lay["weights"][j].get<std::vector<float>>();
+                        for(size_t k = 0; k < c_input_count; k++)
+                            c_weights(j, k) = row_weights[k];
+                    }
+
+                    layers.emplace_back(
+                    c_neuron_count,
+                    c_input_count,
+                    c_inputs,
+                    c_weights,
+                    neural::activations::relu);
+                }
             }
     };
 

@@ -18,6 +18,10 @@ include_directories(${spdlog_INCLUDE_DIRS})
 add_subdirectory(${IncludeDIR}/eigen)
 include_directories(${eigen_INCLUDE_DIRS})
 
+# json
+add_subdirectory(${IncludeDIR}/json)
+include_directories(${IncludeDIR}/json)
+
 add_executable(neuralbuilder ${ROOT_FILES})
 
-target_link_libraries(neuralbuilder PRIVATE spdlog eigen)
+target_link_libraries(neuralbuilder PRIVATE spdlog eigen nlohmann_json)
