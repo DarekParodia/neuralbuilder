@@ -1,26 +1,61 @@
-import { Button, VerticalBox } from "std-widgets.slint";
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { NewNetwork } from "new-network.slint";
 
 export component AppWindow inherits Window {
+    title: "Neural Builder";
     min-width: 400px;
     min-height: 300px;
     
-    in-out property<int> counter: 42;
-    callback request-increase-value();
+    // in-out property<int> counter: 42;
+    // callback request-increase-value();
 
+    new-dialog := NewNetwork {
+        x: (root.width - self.width) / 2;
+        y: (root.height - self.height) / 2;
+        create(name) => {
+            // handle network creation here
+            new-dialog.close();
+        }
+    }
 
     VerticalBox {
         alignment: LayoutAlignment.stretch;
-        Text {
-            text: "Counter: \{root.counter}";
-        }
-        Text {
-            text: "Testo Texto";
-        }
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
+        // Text {
+        //     text: "Counter: \{root.counter}";
+        // }
+        // Text {
+        //     text: "Testo Texto";
+        // }
+        // Button {
+        //     text: "Increase value";
+        //     clicked => {
+        //         root.request-increase-value();
+        //     }
+        // }
+
+        // Navigation
+        HorizontalBox {
+            alignment: LayoutAlignment.stretch;
+            max-height: 40px;
+            HorizontalBox {
+                Text {
+                    text: "Network Name";
+                }
             }
+            HorizontalBox {
+                Button {
+                    text: "Save";
+                }
+                Button {
+                    text: "Load";
+                }
+                Button {
+                    text: "New";
+                    clicked => { new-dialog.show(); }
+                }
+            }
+
+
         }
      }
 }
