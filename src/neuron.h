@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include "logger.h"
 
 #include <Eigen/Dense>
 
@@ -65,21 +66,27 @@ namespace neural {
             network() {
             }
 
+            void print() {
+                logger->info("Network info:");
+                logger->info("Inputs: {}", input_count);
+                logger->info("Outputs: {}", output_count);
+                logger->info("Layers: {}", layers.size());
+            }
             void load_json(std::string filename) {
                 std::ifstream  f(filename);
                 nlohmann::json data = nlohmann::json::parse(f);
 
                 // network info
-                input_count         = data["network_info"]["inputs"];
-                output_count        = data["network_info"]["outputs"];
+                int layer_count     = data["layers"].size();
+                input_count         = data["layers"][0]["weights"][0].size();
+                output_count        = data["layers"][layer_count - 1]["biases"].size();
                 inputs              = new float[input_count];
 
-                int layer_count     = data["layers"].size();
                 for(size_t i = 0; i < layer_count; i++) {
-                    auto   c_lay          = data["layers"][i];
-                    int    c_neuron_count = c_lay["biases"].size();
-                    int          c_input_count = 0;
-                    const float *c_inputs      = nullptr;
+                    auto         c_lay          = data["layers"][i];
+                    int          c_neuron_count = c_lay["biases"].size();
+                    int          c_input_count  = 0;
+                    const float *c_inputs       = nullptr;
 
 
                     if(i == 0) {
@@ -111,6 +118,9 @@ namespace neural {
                     neural::activations::relu);
                 }
             }
+            void create() {
+            }
     };
+
 
 } // namespace neural

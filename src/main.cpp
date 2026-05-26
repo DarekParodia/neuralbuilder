@@ -7,4 +7,5 @@ int main() {
     neural::network netw;
 
     netw.load_json("../example_network.json");
+    netw.print();
 }
